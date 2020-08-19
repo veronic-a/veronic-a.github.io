@@ -1,88 +1,131 @@
-<!DOCTYPE html>
-<html>
-<head>
+<html><head>
+        <meta charset="utf-8">
+        <title>Breakout Game</title>
+        <style>
+            * { padding: 10; margin: 10; }
+            canvas { background: #eee; display: block; margin: 0 auto;}
+        </style>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="480" height="320"></canvas>
+        <script>
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+            var ballRadius = 10;
+            var x = canvas.width/2;
+            var y = canvas.height-30;
+            var dx = 2;
+            var dy = -2;
+            var paddleHeight = 10;
+            var paddleWidth = 75;
+            var paddleX = (canvas.width-paddleWidth)/2;
+            var rightPressed = false;
+            var leftPressed = false;
+            var brickRowCount = 3;
+            var brickColumnCount = 5;
+            var brickWidth = 75;
+            var brickHeight = 20;
+            var brickPadding = 10;
+            var brickOffsetTop = 30;
+            var brickOffsetLeft = 30;
+            var bricks = [];
+            for(var c=0; c<brickColumnCount; c++) {
+                bricks[c] = [];
+                for(var r=0; r<brickRowCount; r++) {
+                    bricks[c][r] = { x: 0, y: 0, status: 1 };
+                }
+            } 
+            var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+            var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+
+            document.addEventListener("keydown", keyDownHandler, false);
+            document.addEventListener("keyup", keyUpHandler, false);
+            function keyDownHandler(e){
+                if(e.key == "Right" || e.key == "ArrowRight"){
+                    rightPressed = true;
+                }
+                else if(e.key == "Left" || e.key == "ArrowLeft"){
+                    leftPressed = true;
+                }
+            }
+            function keyUpHandler(e) {
+                if(e.key == "Right" || e.key == "ArrowRight"){
+                    rightPressed = false;
+                }
+                else if(e.key == "Left" || e.key == "ArrowLeft"){
+                    leftPressed = false;
+                }
+            }
+            function collisionDetection() {
+                for(var c=0; c<brickColumnCount; c++) {
+                    for(var r=0; r<brickRowCount; r++) {
+                        var b = bricks[c][r];
+                        if(b.status == 1) {
+                            if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                                dy = -dy;
+                                b.status = 0;
+                            }
+                        }
+                    }
+                }
+            }
+            function drawPaddle(){
+                ctx.beginPath();
+                ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+                ctx.fillStyle = "green";
+                ctx.fill();
+                ctx.closePath();
+            }
+            function drawBall(){
+                ctx.beginPath();
+                ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+            }
+            function drawBricks() {
+                for(var c=0; c<brickColumnCount; c++) {
+                    for(var r=0; r<brickRowCount; r++) {
+                        if(bricks[c][r].status == 1) {
+                            var brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                            var brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                            bricks[c][r].x = brickX;
+                            bricks[c][r].y = brickY;
+                            ctx.beginPath();
+                            ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                            ctx.fillStyle = "#0095DD";
+                            ctx.fill();
+                            ctx.closePath();
+                        }
+                    }
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawBall();
+                drawPaddle();
+                drawBricks();
+                collisionDetection();
+                if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) { dx = -dx; }
+            if (y + dy < ballRadius) {
+                dy = -dy;
+            } else if (y + dy > canvas.height-ballRadius){
+                if (x > paddleX && x < paddleX+paddleWidth){
+                    dy = -dy;
+                } else {
+                    alert('GAME OVER');
+                    document.location.reload();
+                    clearInterval(interval);
+                }
+            }
+                if(rightPressed && paddleX < canvas.width-paddleWidth){ paddleX += 5; }
+                else if(leftPressed && paddleX > 0){ paddleX -= 5; }
+                x += dx;
+                y += dy;
+            }
+            var interval = setInterval(draw, 10);
+        </script>
     
-    <title>Biodata Diri</title>
-    <link rel="stylesheet" type="text/css" href="assets/styles/main.css">
-    <meta name="viewport" content="width=device-width, intial-scale=1">
-</head>
-<body>
-    <header>
 
-        <div class="jumbotron">
-        <h1>Jepang dan Tempat Menarik</h1>
-        <p>Jiwa yang lebih menyukai tempat yang tenang dan jauh dari kata berisik.</p>
-        </div>
-        <nav>
-        <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#destination">Destination</a></li>
-            <li><a href="#chronicle">Chronicle</a></li>
-            <li><a href="#culture">Culture</a></li>
-        
-        </ul>
-        </nav>
-    
-    </header>
-    <main><div id=content>
-            <article id="about" class="card">
-            <h2>About</h2>
-            <img src="C:\xampp\htdocs\wisata-veronika\assets\images\kyoto.jpg" class="featured-image" alt="about" >
-            <p> Jepang  atau dalam bahasa resmi mereka Nipponkoku atau Nihonkoku, adalah sebuah negara kepulauan di Asia Timur. Letaknya di ujung barat Samudra Pasifik, di sebelah timur Laut Jepang, dan bertetangga dengan Republik Rakyat Tiongkok, Korea, dan Rusia.</p>
-
-            <p>Pulau-pulau paling utara berada di Laut Okhotsk, dan wilayah paling selatan berupa kelompok pulau-pulau kecil di Laut Tiongkok Timur, tepatnya di sebelah selatan Okinawa yang bertetangga dengan Taiwan.
-                    
-            <p>Jepang terdiri dari 6.852 pulau dan menjadikannya sebagai negara kepulauan. Sebagian besar pulau di Jepang bergunung-gunung, dan sebagian di antaranya merupakan gunung berapi. Gunung tertinggi di Jepang adalah Gunung Fuji yang merupakan sebuah gunung berapi.
-                    
-            <p> Penduduk Jepang berjumlah 128 juta orang, dan berada di peringkat ke-10 negara berpenduduk terbanyak di dunia. Tokyo secara adalah ibu kota Jepang, dan berkedudukan sebagai sebuah prefektur.
-                    
-            <p>Tokyo Raya adalah sebutan untuk Tokyo dan beberapa kota yang berada di prefektur sekelilingnya. Sebagai daerah metropolitan terluas di dunia, Tokyo Raya berpenduduk lebih dari 30 juta orang. </p>
-            </article>
-         <article id="destination" class="card">
-            <h2>Destination</h2>
-            <div class="gallery">
-        
-                      <img src="C:\xampp\htdocs\wisata-veronika\assets\images\kyoto.jpg" alt="Cinque Terre" width="600" height="400">
-                    </a>
-                    <div class="desc">Kyoto</div>
-                  </div>
-                  
-                  <div class="gallery">
-                    
-                      <img src="C:\xampp\htdocs\wisata-veronika\assets\images\tokyo.jpg" alt="Forest" width="600" height="400">
-                    </a>
-                    <div class="desc">Tokyo</div>
-                  </div>
-                  
-                  <div class="gallery">
-                    
-                      <img src="C:\xampp\htdocs\wisata-veronika\assets\images\Hakone.jpg" alt="Northern Lights" width="400" height="100">
-                    </a>
-                    <div class="desc">Hakone</div>
-                  </div>
-                  
-        </article>
-
-       <article id="chronicle" class="card">
-           <h2>Chronicle</h2>
-           <img src="C:\xampp\htdocs\wisata-veronika\assets\images\jep.jpg" class="featured-image" alt="chronicle" >
-            <p>Jepang memiliki lebih dari 3.000 pulau yang terletak di pesisir Lautan Pasifik di timur benua Asia. Istilah Kepulauan Jepang merujuk kepada empat pulau besar, dari utara ke selatan, Hokkaido, Honshu, Shikoku, dan Kyushu, serta Kepulauan Ryukyu yang berada di selatan Kyushu. Sekitar 70% hingga 80% dari wilayah Jepang terdiri dari pegunungan yang berhutan-hutan, dan cocok untuk pertanian, industri, serta permukiman. Daerah yang curam berbahaya untuk dihuni karena risiko tanah longsor akibat gempa bumi, kondisi tanah yang lunak, dan hujan lebat. Oleh karena itu, permukiman penduduk terpusat di kawasan pesisir. Jepang termasuk salah satu negara berpenduduk terpadat di dunia. </p>
-        </article>
-    </div>
-         
-        <aside>
-        <article id="culture" class="card">
-            <h2>Culture</h2>
-           <p>Bagi yang ingin merasakan pengalaman penuh mengenai budaya jepang tradisional bisa mencoba mengikuti upacara minum teh tradisional di Kebun Gyokusen-en yang indah
-
-            </p>
-        </article>
-        </aside>
-   
-   </main>
-    <footer>
-        <p>Produk Kreatif dan Kewirausahaan &#169; 2020, SMK Cinta Kasih Tzu Chi</p>
-    </footer>
-
-</body>
-<html>
+</body></html>
