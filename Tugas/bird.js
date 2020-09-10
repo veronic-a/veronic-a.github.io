@@ -14,25 +14,25 @@ var pipeNorth = new Image();
 
 var pipeSouth = new Image();
 
-bird.src = "images/bird.png";
+bird.src = "2.png";
 
-bg.src = "images/bg.png";
+bg.src = "6.png";
 
-fg.src = "images/fg.png";
+fg.src = "5.png";
 
-pipeNorth.src = "images/pipeNorth.png";
+pipeNorth.src = "1.png";
 
-pipeSouth.src = "images/pipeSouth.png";
+pipeSouth.src = "4.png";
 
 
 
 // some variables
 
-var gap = 85;
+var gap = 75;
 
 var constant;
 
-var bX = 10;
+var bX = 100;
 
 var bY = 150;
 
@@ -156,7 +156,7 @@ function draw(){
 
     ctx.font = "20px Verdana";
 
-    ctx.fillText("Score : "+score,10,cvs.height-20);
+    ctx.fillText("Score : "+score,10,cvs.height-50);
 
   
 
